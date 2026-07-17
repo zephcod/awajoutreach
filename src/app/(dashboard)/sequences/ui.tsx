@@ -1,0 +1,121 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+interface TemplateOption {
+  key: string;
+  defaultSubject: string;
+  category: string;
+  description: string;
+}
+
+interface StepDraft {
+  templateKey: string;
+  subject: string;
+  delayDays: number;
+}
+
+const inputCls =
+  "rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none";
+const btnCls =
+  "rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50";
+
+export function SequenceBuilder({ templates }: { templates: TemplateOption[] }) {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [steps, setSteps] = useState<StepDraft[]>([]);
+  const [busy, setBusy] = useState(false);
+
+  function addStep() {
+    const t = templates[0];
+    setSteps([...steps, { templateKey: t.key, subject: t.defaultSubject, delayDays: steps.length === 0 ? 0 : 3 }]);
+  }
+
+  function update(i: number, patch: Partial<StepDraft>) {
+    setSteps(steps.map((s, ix) => (ix === i ? { ...s, ...patch } : s)));
+  }
+
+  async function save() {
+    setBusy(true);
+    await fetch("/api/sequences", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name,
+        steps: steps.map((s) => ({
+          templateKey: s.templateKey,
+          subject: s.subject,
+          delayHours: s.delayDays * 24,
+        })),
+      }),
+    });
+    setBusy(false);
+    setName("");
+    setSteps([]);
+    router.refresh();
+  }
+
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-5">
+      <h2 className="mb-3 font-semibold">New sequence</h2>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Sequence name (e.g. Cold outreach — retail SMEs)"
+        className={`${inputCls} mb-3 w-full`}
+      />
+      <div className="space-y-2">
+        {steps.map((s, i) => (
+          <div key={i} className="flex flex-wrap items-center gap-2">
+            <span className="text-sm text-gray-400">#{i + 1}</span>
+            <select
+              value={s.templateKey}
+              onChange={(e) => {
+                const t = templates.find((t) => t.key === e.target.value)!;
+                update(i, { templateKey: t.key, subject: t.defaultSubject });
+              }}
+              className={inputCls}
+            >
+              {templates.map((t) => (
+                <option key={t.key} value={t.key}>{t.key} ({t.category})</option>
+              ))}
+            </select>
+            <input
+              value={s.subject}
+              onChange={(e) => update(i, { subject: e.target.value })}
+              className={`${inputCls} flex-1 min-w-48`}
+              placeholder="Subject ({{firstName}}, {{company}} supported)"
+            />
+            <label className="flex items-center gap-1 text-sm text-gray-500">
+              wait
+              <input
+                type="number"
+                min={0}
+                value={s.delayDays}
+                onChange={(e) => update(i, { delayDays: Number(e.target.value) })}
+                className={`${inputCls} w-16`}
+                disabled={i === 0}
+              />
+              days
+            </label>
+            <button
+              onClick={() => setSteps(steps.filter((_, ix) => ix !== i))}
+              className="text-sm text-red-500 hover:underline"
+            >
+              remove
+            </button>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 flex gap-2">
+        <button onClick={addStep} className="rounded-md border border-gray-300 px-3 py-1.5 text-sm hover:bg-gray-50">
+          + Add step
+        </button>
+        <button onClick={save} disabled={busy || !name || steps.length === 0} className={btnCls}>
+          Save sequence
+        </button>
+      </div>
+    </div>
+  );
+}

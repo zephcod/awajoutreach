@@ -1,0 +1,49 @@
+name: Outreach cron
+
+on:
+  schedule:
+    # Process due sequence steps — every 15 minutes.
+    # NOTE: GitHub cron runs in UTC and may be delayed a few minutes under load.
+    - cron: "*/15 * * * *"
+    # Advance the warm-up ramp — daily at 06:00 UTC.
+    - cron: "0 6 * * *"
+  # Allows manual runs from the Actions tab (choose which job to hit).
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Which endpoint to trigger"
+        required: true
+        default: "process-sequences"
+        type: choice
+        options:
+          - process-sequences
+          - warmup
+
+jobs:
+  process-sequences:
+    name: Process sequence sends
+    runs-on: ubuntu-latest
+    # Run on the 15-min schedule, or when manually dispatched with job=process-sequences
+    if: github.event.schedule == '*/15 * * * *' || (github.event_name == 'workflow_dispatch' && inputs.job == 'process-sequences')
+    steps:
+      - name: Call /api/cron/process-sequences
+        run: |
+          set -euo pipefail
+          response=$(curl -sS --fail-with-body --max-time 300 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/process-sequences")
+          echo "Result: $response"
+
+  warmup:
+    name: Advance warm-up day
+    runs-on: ubuntu-latest
+    # Run on the daily schedule, or when manually dispatched with job=warmup
+    if: github.event.schedule == '0 6 * * *' || (github.event_name == 'workflow_dispatch' && inputs.job == 'warmup')
+    steps:
+      - name: Call /api/cron/warmup
+        run: |
+          set -euo pipefail
+          response=$(curl -sS --fail-with-body --max-time 60 \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/cron/warmup")
+          echo "Result: $response"
