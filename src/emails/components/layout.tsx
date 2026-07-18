@@ -74,7 +74,7 @@ export function EmailLayout({ preview, children, footer = "none", recipientEmail
             <Section>
               <Hr style={{ borderColor: brand.line, margin: "28px 0 12px" }} />
               <Text style={{ fontSize: "12px", color: brand.smoke, lineHeight: "18px" }}>
-                Awaj ET — All-in-one digital marketing for Ethiopian Businesses. Addis Ababa, Ethiopia.
+                Awaj ET — All-in-one digital marketing solution for Ethiopian Businesses. 
                 <br />
                 You’re receiving this because you signed up or downloaded a resource from us.{" "}
                 <Link href={unsubUrl} style={{ color: brand.smoke, textDecoration: "underline" }}>

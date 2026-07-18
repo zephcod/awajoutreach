@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ))}
         </nav>
         <p className="mt-10 px-3 font-mono text-[10px] tracking-widest text-mist/30">
-          SEND IT FURTHER
+          Goal | 200 Emails
         </p>
       </aside>
       <main className="flex-1 p-8">{children}</main>

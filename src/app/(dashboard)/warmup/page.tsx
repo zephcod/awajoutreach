@@ -16,7 +16,7 @@ export default async function WarmupPage() {
 
   return (
     <div>
-      <h1 className="mb-6 font-display text-2xl font-bold">Domain warm-up</h1>
+      <h1 className="mb-6 font-display text-2xl font-bold">Domain Sherar</h1>
 
       <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
         {state ? (
