@@ -85,7 +85,10 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
     description: "Payment receipt",
   },
   "warmup-ping": {
-    component: (p) => createElement(WarmupPing, p),
+    component: (p) =>
+      createElement(WarmupPing, {
+        note: typeof p.note === "string" ? p.note : undefined,
+      }),
     defaultSubject: "Quick check-in",
     category: "warmup",
     description: "Warm-up seed email (send to inboxes you control)",
