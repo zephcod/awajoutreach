@@ -133,6 +133,12 @@ await fetch("https://outreach.yourdomain.com/api/lead-magnet/subscribe", {
 
 > **Protect the dashboard.** It ships without auth. Wrap the `(dashboard)` route group with your existing auth (middleware, Clerk, Appwrite Auth, or at minimum Vercel password protection) before deploying.
 
+## Brand assets
+
+- Dashboard uses `public/logo.svg` (already included) with the brand palette (Solar Gold `#F0A93B`, Deep Amber `#C97D1E`, Ink Navy `#12121C`, Visor Charcoal `#2B2B33`, Mist `#F7F3EC`) and fonts (Space Grotesk display / Inter body / JetBrains Mono captions) — defined as Tailwind tokens in `src/app/globals.css`.
+- **Emails need a PNG**: export the logo as `public/logo.png` (~72×72 px, transparent background). Email clients (Gmail, Outlook) don't render SVG, so branded emails reference `{APP_URL}/logo.png`.
+- Cold outreach templates are deliberately unbranded (no logo/colors) — they read as a personal note, which protects reply rates and deliverability. Lead magnet, nurture, and transactional emails carry the full branded header/footer.
+
 ## Extending
 
 - **New template**: add a `.tsx` in `src/emails/…`, register it in `src/emails/registry.ts` — it immediately appears in the sequence builder.

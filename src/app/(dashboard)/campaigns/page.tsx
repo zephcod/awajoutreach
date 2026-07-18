@@ -14,27 +14,27 @@ export default async function CampaignsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Campaigns</h1>
+      <h1 className="mb-6 font-display text-2xl font-bold">Campaigns</h1>
       <div className="mb-8">
         <CampaignForm sequences={sequences.map((s) => ({ id: s.$id, name: s.name }))} />
       </div>
       <div className="space-y-4">
         {campaigns.map((c) => (
-          <div key={c.$id} className="rounded-lg border border-gray-200 bg-white p-5">
+          <div key={c.$id} className="rounded-lg border border-charcoal/10 bg-white p-5">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="font-semibold">{c.name}</h2>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-smoke">
                   {c.type} · sequence: {seqName(c.sequenceId)} · {c.sentToday}/{c.dailyLimit} sent today
                 </p>
               </div>
               <span
                 className={`rounded-full px-2 py-0.5 text-xs ${
                   c.status === "active"
-                    ? "bg-green-100 text-green-700"
+                    ? "bg-gold/15 text-amber"
                     : c.status === "paused"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-600"
+                      ? "bg-amber/15 text-amber"
+                      : "bg-charcoal/10 text-smoke"
                 }`}
               >
                 {c.status}
@@ -44,7 +44,7 @@ export default async function CampaignsPage() {
           </div>
         ))}
         {campaigns.length === 0 && (
-          <p className="text-gray-400">No campaigns yet — create a sequence first, then a campaign.</p>
+          <p className="text-smoke/70">No campaigns yet — create a sequence first, then a campaign.</p>
         )}
       </div>
     </div>

@@ -21,21 +21,21 @@ export function WarmupControls({ status }: { status: string }) {
   const btn = "rounded-md px-4 py-2 text-sm font-medium disabled:opacity-50";
   if (status === "none") {
     return (
-      <button disabled={busy} onClick={() => act("start")} className={`${btn} bg-green-600 text-white hover:bg-green-700`}>
+      <button disabled={busy} onClick={() => act("start")} className={`${btn} bg-gold text-navy hover:bg-amber w-48`}>
         Start warm-up
       </button>
     );
   }
   if (status === "active") {
     return (
-      <button disabled={busy} onClick={() => act("pause")} className={`${btn} border border-gray-300 hover:bg-gray-50`}>
+      <button disabled={busy} onClick={() => act("pause")} className={`${btn} border border-charcoal/20 hover:bg-mist`}>
         Pause
       </button>
     );
   }
   if (status === "paused") {
     return (
-      <button disabled={busy} onClick={() => act("resume")} className={`${btn} bg-green-600 text-white hover:bg-green-700`}>
+      <button disabled={busy} onClick={() => act("resume")} className={`${btn} bg-gold text-navy hover:bg-amber`}>
         Resume
       </button>
     );

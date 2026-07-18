@@ -1,6 +1,6 @@
 import { Button, Section } from "@react-email/components";
 import * as React from "react";
-import { EmailLayout, P } from "../components/layout";
+import { EmailLayout, P, ctaStyle } from "../components/layout";
 import type { LeadMagnetProps } from "./lead-magnet-delivery";
 
 const APP_URL = process.env.APP_URL ?? "https://example.com";
@@ -19,18 +19,7 @@ export default function Nurture2({ firstName = "there", email = "" }: LeadMagnet
         you keep the recommendations whether we work together or not.
       </P>
       <Section style={{ textAlign: "center", margin: "24px 0" }}>
-        <Button
-          href={`${APP_URL}/book`}
-          style={{
-            backgroundColor: "#16a34a",
-            color: "#ffffff",
-            padding: "12px 28px",
-            borderRadius: "8px",
-            fontSize: "15px",
-            fontWeight: 600,
-            textDecoration: "none",
-          }}
-        >
+        <Button href={`${APP_URL}/book`} style={ctaStyle}>
           Book a free marketing review
         </Button>
       </Section>

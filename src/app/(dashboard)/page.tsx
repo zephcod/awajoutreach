@@ -41,20 +41,20 @@ export default async function Overview() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">Overview</h1>
+      <h1 className="mb-6 font-display text-2xl font-bold">Overview</h1>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-lg border border-gray-200 bg-white p-5">
-            <p className="text-sm text-gray-500">{s.label}</p>
+          <div key={s.label} className="rounded-lg border border-charcoal/10 bg-white p-5">
+            <p className="text-sm text-smoke">{s.label}</p>
             <p className={`mt-1 text-2xl font-semibold ${s.alert ? "text-red-600" : ""}`}>{s.value}</p>
           </div>
         ))}
       </div>
 
-      <h2 className="mt-10 mb-4 text-lg font-semibold">Recent sends</h2>
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <h2 className="mt-10 mb-4 font-display text-lg font-semibold">Recent sends</h2>
+      <div className="overflow-hidden rounded-lg border border-charcoal/10 bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-left text-gray-500">
+          <thead className="bg-mist text-left text-smoke">
             <tr>
               <th className="px-4 py-2 font-medium">Template</th>
               <th className="px-4 py-2 font-medium">Subject</th>
@@ -65,7 +65,7 @@ export default async function Overview() {
           </thead>
           <tbody>
             {sends.slice(0, 25).map((s) => (
-              <tr key={s.$id} className="border-t border-gray-100">
+              <tr key={s.$id} className="border-t border-charcoal/5">
                 <td className="px-4 py-2">{s.templateKey}</td>
                 <td className="px-4 py-2 max-w-xs truncate">{s.subject}</td>
                 <td className="px-4 py-2">{s.category}</td>
@@ -75,18 +75,18 @@ export default async function Overview() {
                       ["bounced", "complained"].includes(s.status)
                         ? "bg-red-100 text-red-700"
                         : ["opened", "clicked"].includes(s.status)
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-600"
+                          ? "bg-gold/15 text-amber"
+                          : "bg-charcoal/10 text-smoke"
                     }`}
                   >
                     {s.status}
                   </span>
                 </td>
-                <td className="px-4 py-2 text-gray-500">{new Date(s.sentAt).toLocaleString()}</td>
+                <td className="px-4 py-2 text-smoke">{new Date(s.sentAt).toLocaleString()}</td>
               </tr>
             ))}
             {sends.length === 0 && (
-              <tr><td colSpan={5} className="px-4 py-8 text-center text-gray-400">No sends yet.</td></tr>
+              <tr><td colSpan={5} className="px-4 py-8 text-center text-smoke/70">No sends yet.</td></tr>
             )}
           </tbody>
         </table>

@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const inputCls =
-  "w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none";
+  "w-full rounded-md border border-charcoal/20 px-3 py-2 text-sm focus:border-gold focus:outline-none";
 const btnCls =
-  "rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50";
+  "rounded-md bg-gold px-4 py-2 text-sm font-semibold text-navy hover:bg-amber disabled:opacity-50";
 const btnGhost =
-  "rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50";
+  "rounded-md border border-charcoal/20 px-3 py-1.5 text-sm text-charcoal hover:bg-mist disabled:opacity-50";
 
 export function CampaignForm({ sequences }: { sequences: { id: string; name: string }[] }) {
   const router = useRouter();
@@ -33,7 +33,7 @@ export function CampaignForm({ sequences }: { sequences: { id: string; name: str
   }
 
   return (
-    <form onSubmit={submit} className="rounded-lg border border-gray-200 bg-white p-5">
+    <form onSubmit={submit} className="rounded-lg border border-charcoal/10 bg-white p-5">
       <h2 className="mb-3 font-semibold">New campaign</h2>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <input name="name" placeholder="Name *" required className={inputCls} />
@@ -92,7 +92,7 @@ export function CampaignControls({ id, status }: { id: string; status: string })
         value={tag}
         onChange={(e) => setTag(e.target.value)}
         placeholder="Enroll contacts by tag…"
-        className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-green-500 focus:outline-none"
+        className="rounded-md border border-charcoal/20 px-3 py-1.5 text-sm focus:border-gold focus:outline-none"
       />
       <button
         disabled={busy || !tag}
@@ -101,7 +101,7 @@ export function CampaignControls({ id, status }: { id: string; status: string })
       >
         Enroll
       </button>
-      {msg && <span className="text-sm text-gray-500">{msg}</span>}
+      {msg && <span className="text-sm text-smoke">{msg}</span>}
     </div>
   );
 }

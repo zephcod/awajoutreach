@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const inputCls =
-  "w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none";
+  "w-full rounded-md border border-charcoal/20 px-3 py-2 text-sm focus:border-gold focus:outline-none";
 const btnCls =
-  "rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50";
+  "rounded-md bg-gold px-4 py-2 text-sm font-semibold text-navy hover:bg-amber disabled:opacity-50";
 
 export function ContactForm() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={submit} className="rounded-lg border border-gray-200 bg-white p-5">
+    <form onSubmit={submit} className="rounded-lg border border-charcoal/10 bg-white p-5">
       <h2 className="mb-3 font-semibold">Add contact</h2>
       <div className="grid grid-cols-2 gap-3">
         <input name="email" type="email" placeholder="Email *" required className={inputCls} />
@@ -49,7 +49,7 @@ export function ContactForm() {
       </div>
       <div className="mt-3 flex items-center gap-3">
         <button disabled={busy} className={btnCls}>Add</button>
-        {msg && <span className="text-sm text-gray-500">{msg}</span>}
+        {msg && <span className="text-sm text-smoke">{msg}</span>}
       </div>
     </form>
   );
@@ -94,13 +94,13 @@ export function CsvImport() {
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-5">
+    <div className="rounded-lg border border-charcoal/10 bg-white p-5">
       <h2 className="mb-3 font-semibold">Import CSV</h2>
-      <p className="mb-3 text-sm text-gray-500">
+      <p className="mb-3 text-sm text-smoke">
         Columns: <code>email,firstName,lastName,company,tags</code> (tags separated by <code>;</code>)
       </p>
       <input type="file" accept=".csv" onChange={onFile} disabled={busy} className="text-sm" />
-      {msg && <p className="mt-3 text-sm text-gray-500">{msg}</p>}
+      {msg && <p className="mt-3 text-sm text-smoke">{msg}</p>}
     </div>
   );
 }
