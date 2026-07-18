@@ -1,3 +1,0 @@
-{
-  "_comment": "Scheduling is handled by GitHub Actions (.github/workflows/outreach-cron.yml), not Vercel Cron — the Hobby plan only allows daily runs. Do not add crons here or the endpoints will fire twice."
-}
