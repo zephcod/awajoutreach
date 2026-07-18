@@ -26,6 +26,16 @@ jobs:
     # Run on the 15-min schedule, or when manually dispatched with job=process-sequences
     if: github.event.schedule == '*/15 * * * *' || (github.event_name == 'workflow_dispatch' && inputs.job == 'process-sequences')
     steps:
+      - name: Check secrets are configured
+        run: |
+          if [ -z "${{ secrets.APP_URL }}" ]; then
+            echo "::error::APP_URL repository secret is not set (Settings → Secrets and variables → Actions). Value must look like https://your-app.vercel.app — no quotes, no trailing slash."
+            exit 1
+          fi
+          if [ -z "${{ secrets.CRON_SECRET }}" ]; then
+            echo "::error::CRON_SECRET repository secret is not set. It must match CRON_SECRET in your Vercel env."
+            exit 1
+          fi
       - name: Call /api/cron/process-sequences
         run: |
           set -euo pipefail
@@ -40,6 +50,12 @@ jobs:
     # Run on the daily schedule, or when manually dispatched with job=warmup
     if: github.event.schedule == '0 6 * * *' || (github.event_name == 'workflow_dispatch' && inputs.job == 'warmup')
     steps:
+      - name: Check secrets are configured
+        run: |
+          if [ -z "${{ secrets.APP_URL }}" ] || [ -z "${{ secrets.CRON_SECRET }}" ]; then
+            echo "::error::APP_URL and/or CRON_SECRET repository secrets are not set (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
       - name: Call /api/cron/warmup
         run: |
           set -euo pipefail
