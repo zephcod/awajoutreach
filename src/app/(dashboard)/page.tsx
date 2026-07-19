@@ -42,7 +42,7 @@ export default async function Overview() {
   return (
     <div>
       <h1 className="mb-6 font-display text-2xl font-bold">Overview</h1>
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((s) => (
           <div key={s.label} className="rounded-lg border border-charcoal/10 bg-white p-5">
             <p className="text-sm text-smoke">{s.label}</p>
@@ -52,8 +52,8 @@ export default async function Overview() {
       </div>
 
       <h2 className="mt-10 mb-4 font-display text-lg font-semibold">Recent sends</h2>
-      <div className="overflow-hidden rounded-lg border border-charcoal/10 bg-white">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-charcoal/10 bg-white">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="bg-mist text-left text-smoke">
             <tr>
               <th className="px-4 py-2 font-medium">Template</th>

@@ -1,5 +1,5 @@
 import { TEMPLATES } from "@/emails/registry";
-import { ManualSendForm } from "./ui";
+import { SendTabs } from "./send-tabs";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +15,10 @@ export default function SendPage() {
     <div>
       <h1 className="mb-2 font-display text-2xl font-bold">Send email</h1>
       <p className="mb-6 text-sm text-smoke">
-        One-off manual send of any template. Goes through the same pipeline as automated
-        sends: suppression check, logging, and unsubscribe headers all apply.
+        One-off manual sends — from a template, or compose free text with attachments. Both go
+        through the same pipeline: suppression check, logging, and unsubscribe headers all apply.
       </p>
-      <ManualSendForm templates={templates} />
+      <SendTabs templates={templates} />
     </div>
   );
 }

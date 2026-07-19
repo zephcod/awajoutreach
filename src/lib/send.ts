@@ -21,6 +21,14 @@ export interface SendEmailInput {
   /** Transactional email must be delivered even without marketing consent. */
   skipSuppressionCheck?: boolean;
   headers?: Record<string, string>;
+  /** Override the default reply-to (e.g. match the chosen sender account). */
+  replyTo?: string;
+  /**
+   * Optional file attachments. `content` must be a base64 string — passing a
+   * raw Buffer makes the SDK JSON-serialize it as a byte array, which bloats
+   * the payload ~4× and causes Resend 500s on larger files.
+   */
+  attachments?: { filename: string; content: string }[];
 }
 
 const FROM_BY_CATEGORY: Record<Send["category"], () => string> = {
@@ -50,7 +58,8 @@ export async function sendEmail(input: SendEmailInput): Promise<{ id: string | n
     to,
     subject: input.subject,
     react: input.react,
-    replyTo: env.replyTo(),
+    replyTo: input.replyTo ?? env.replyTo(),
+    attachments: input.attachments,
     headers: {
       ...(isMarketing
         ? {

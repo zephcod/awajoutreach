@@ -1,6 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Select } from "@/components/ui/select";
+import { DEFAULT_SENDER, SENDERS } from "@/lib/senders";
+
+const SENDER_OPTIONS = SENDERS.map((s) => ({
+  value: s.email,
+  label: `${s.name} — ${s.email}`,
+}));
 
 interface TemplateOption {
   key: string;
@@ -36,6 +43,7 @@ const FIELD_META: Record<string, { label: string; placeholder: string }> = {
 
 export function ManualSendForm({ templates }: { templates: TemplateOption[] }) {
   const [templateKey, setTemplateKey] = useState(templates[0]?.key ?? "");
+  const [from, setFrom] = useState(DEFAULT_SENDER);
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState(templates[0]?.defaultSubject ?? "");
   const [vars, setVars] = useState<Record<string, string>>({});
@@ -60,7 +68,7 @@ export function ManualSendForm({ templates }: { templates: TemplateOption[] }) {
       const res = await fetch("/api/send/manual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to, templateKey, subject, vars }),
+        body: JSON.stringify({ from, to, templateKey, subject, vars }),
       });
       const data = await res.json();
       setResult(
@@ -78,18 +86,20 @@ export function ManualSendForm({ templates }: { templates: TemplateOption[] }) {
     <form onSubmit={send} className="max-w-2xl space-y-5">
       <div className="rounded-lg border border-charcoal/10 bg-white p-5">
         <label className={labelCls}>Template</label>
-        <select value={templateKey} onChange={(e) => pickTemplate(e.target.value)} className={inputCls}>
-          {templates.map((t) => (
-            <option key={t.key} value={t.key}>
-              {t.key} · {t.category}
-            </option>
-          ))}
-        </select>
+        <Select
+          value={templateKey}
+          onValueChange={pickTemplate}
+          options={templates.map((t) => ({ value: t.key, label: `${t.key} · ${t.category}` }))}
+        />
         {selected && <p className="mt-2 text-xs text-smoke">{selected.description}</p>}
       </div>
 
       <div className="rounded-lg border border-charcoal/10 bg-white p-5">
         <div className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <label className={labelCls}>Send as</label>
+            <Select value={from} onValueChange={setFrom} options={SENDER_OPTIONS} />
+          </div>
           <div className="sm:col-span-2">
             <label className={labelCls}>To *</label>
             <input
@@ -119,10 +129,10 @@ export function ManualSendForm({ templates }: { templates: TemplateOption[] }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
         <button
           disabled={busy || !to}
-          className="rounded-md bg-gold px-5 py-2 text-sm font-semibold text-navy hover:bg-amber disabled:opacity-50"
+          className="w-full rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-amber disabled:opacity-50 sm:w-auto"
         >
           {busy ? "Sending…" : "Send email"}
         </button>

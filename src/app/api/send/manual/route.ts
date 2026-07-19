@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { renderTemplate, TEMPLATES } from "@/emails/registry";
 import { sendEmail } from "@/lib/send";
 import { COLLECTIONS, DB, Query, db } from "@/lib/appwrite";
+import { getSender, senderAddress } from "@/lib/senders";
 
 /**
  * Manual send from the dashboard.
@@ -20,6 +21,16 @@ export async function POST(req: NextRequest) {
       { error: "a valid `to` and `templateKey` are required" },
       { status: 400 }
     );
+  }
+
+  // Optional sender override — must be on the approved list (src/lib/senders.ts).
+  // Without it, the category's default from-address applies.
+  let sender;
+  if (body.from) {
+    sender = getSender(String(body.from));
+    if (!sender) {
+      return NextResponse.json({ error: "from is not an approved sender account" }, { status: 400 });
+    }
   }
 
   const vars = { email: to, ...(body.vars ?? {}) };
@@ -42,6 +53,8 @@ export async function POST(req: NextRequest) {
     subject,
     react: rendered.element,
     category: entry.category,
+    from: sender ? senderAddress(sender) : undefined,
+    replyTo: sender && !sender.email.startsWith("no-reply") ? sender.email : undefined,
     templateKey: body.templateKey,
     contactId,
     skipSuppressionCheck:

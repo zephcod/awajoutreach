@@ -5,7 +5,7 @@
  * Usage:  cp .env.example .env  →  fill Appwrite vars  →  npm run setup:appwrite
  */
 import "dotenv/config";
-import { Client, Databases, ID } from "node-appwrite";
+import { Client, Databases, ID, Permission, Role, Storage } from "node-appwrite";
 
 const client = new Client()
   .setEndpoint(process.env.APPWRITE_ENDPOINT!)
@@ -140,6 +140,27 @@ async function main() {
     { kind: "string", key: "status", size: 32, default: "active" },
     { kind: "datetime", key: "startedAt" },
   ]);
+
+  // Storage bucket for compose-tab email attachments. Anonymous users may
+  // CREATE files (write-only dropbox — uploads bypass Vercel's 4.5 MB body
+  // cap by going browser → Appwrite directly), but only the server API key
+  // can read or delete. Files are deleted right after the email is sent.
+  const storage = new Storage(client);
+  const bucketId = process.env.APPWRITE_ATTACHMENTS_BUCKET_ID ?? "attachments";
+  try {
+    await storage.getBucket(bucketId);
+    console.log(`✓ bucket "${bucketId}" exists`);
+  } catch {
+    await storage.createBucket(
+      bucketId,
+      "Email attachments",
+      [Permission.create(Role.any())],
+      false, // fileSecurity
+      true, // enabled
+      15 * 1024 * 1024 // max file size: 15 MB
+    );
+    console.log(`+ created bucket "${bucketId}"`);
+  }
 
   console.log("\nDone. Collections ready — start the app with `npm run dev`.");
 }

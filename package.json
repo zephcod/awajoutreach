@@ -11,6 +11,8 @@
     "setup:appwrite": "tsx scripts/setup-appwrite.ts"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.0",
+    "@radix-ui/react-select": "^2.1.0",
     "@react-email/components": "^0.5.0",
     "next": "^16.0.0",
     "node-appwrite": "^17.0.0",

@@ -27,11 +27,12 @@ All-in-one outreach engine for Awaj ET: **cold email sequences, lead magnets, do
    - Create a webhook → `https://YOUR_APP/api/webhooks/resend`, subscribe to `delivered, opened, clicked, bounced, complained` → copy signing secret to `RESEND_WEBHOOK_SECRET`.
 
 3. **Appwrite Cloud**
-   - Create a project, then an API key with `databases.*` scopes.
-   - Fill `APPWRITE_*` vars, then run:
+   - Create a project, then an API key with `databases.*` and `storage.*` scopes.
+   - Fill `APPWRITE_*` and `NEXT_PUBLIC_APPWRITE_*` vars, then run:
    ```bash
-   npm run setup:appwrite   # creates database + 8 collections + indexes
+   npm run setup:appwrite   # creates database + 8 collections + indexes + attachments bucket
    ```
+   Compose-tab attachments upload from the **browser directly to Appwrite Storage** (sidestepping Vercel's 4.5 MB request cap), so the endpoint/project ID are also needed as `NEXT_PUBLIC_` vars. The bucket is write-only for anonymous users — only the server API key can read/delete — and files are deleted immediately after the email sends.
 
 4. **Run**
    ```bash
@@ -131,7 +132,22 @@ await fetch("https://outreach.yourdomain.com/api/lead-magnet/subscribe", {
 
 **B. Merge into your app** — copy `src/lib`, `src/emails`, and `src/app/api` into your project, add the deps (`resend`, `@react-email/components`, `node-appwrite`, `svix`), and mount the dashboard pages wherever you like (they're standard App Router server components; add your own auth around the `(dashboard)` group).
 
-> **Protect the dashboard.** It ships without auth. Wrap the `(dashboard)` route group with your existing auth (middleware, Clerk, Appwrite Auth, or at minimum Vercel password protection) before deploying.
+## Dashboard auth
+
+The app is protected by a shared password and a signed cookie, enforced by Next.js middleware (`src/middleware.ts`) — no database, no auth library.
+
+- Set two env vars: `DASHBOARD_PASSWORD` (what you type at `/login`) and `AUTH_SECRET` (signs the session cookie — generate with `openssl rand -hex 32`).
+- On sign-in, an HMAC-SHA256-signed, HttpOnly, Secure cookie valid for 30 days is set. The middleware verifies it on every request; pages redirect to `/login`, API routes get a JSON 401.
+- Routes with their own protection stay outside the gate: crons + transactional send (Bearer `CRON_SECRET`), the Resend webhook (svix signature), and the public unsubscribe + lead-magnet endpoints.
+- Sign out from the sidebar. To revoke all sessions at once (e.g. a device is lost), rotate `AUTH_SECRET`; to just change the password, rotate `DASHBOARD_PASSWORD` (existing cookies stay valid until they expire — rotate both to force re-login).
+- **Machine access:** every gated API route also accepts `Authorization: Bearer <CRON_SECRET>`, so your existing app or scripts can call `/api/contacts`, `/api/campaigns`, `/api/sequences`, `/api/send/manual`, and `/api/warmup` without a browser session:
+
+  ```bash
+  curl -X POST https://your-app/api/send/manual \
+    -H "Authorization: Bearer $CRON_SECRET" \
+    -H "Content-Type: application/json" \
+    -d '{"to":"client@example.com","templateKey":"welcome","vars":{"firstName":"Sara"}}'
+  ```
 
 ## Brand assets
 

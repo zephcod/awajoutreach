@@ -17,8 +17,8 @@ export default async function ContactsPage() {
         <ContactForm />
         <CsvImport />
       </div>
-      <div className="overflow-hidden rounded-lg border border-charcoal/10 bg-white">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-charcoal/10 bg-white">
+        <table className="w-full min-w-[640px] text-sm">
           <thead className="bg-mist text-left text-smoke">
             <tr>
               <th className="px-4 py-2 font-medium">Email</th>

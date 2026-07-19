@@ -40,12 +40,12 @@ export function ContactForm() {
   return (
     <form onSubmit={submit} className="rounded-lg border border-charcoal/10 bg-white p-5">
       <h2 className="mb-3 font-semibold">Add contact</h2>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <input name="email" type="email" placeholder="Email *" required className={inputCls} />
         <input name="company" placeholder="Company" className={inputCls} />
         <input name="firstName" placeholder="First name" className={inputCls} />
         <input name="lastName" placeholder="Last name" className={inputCls} />
-        <input name="tags" placeholder="Tags (comma-separated)" className={`${inputCls} col-span-2`} />
+        <input name="tags" placeholder="Tags (comma-separated)" className={`${inputCls} sm:col-span-2`} />
       </div>
       <div className="mt-3 flex items-center gap-3">
         <button disabled={busy} className={btnCls}>Add</button>

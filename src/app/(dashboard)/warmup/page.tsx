@@ -20,7 +20,7 @@ export default async function WarmupPage() {
 
       <div className="mb-6 rounded-lg border border-charcoal/10 bg-white p-5">
         {state ? (
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm text-smoke">Status</p>
               <p className="font-display text-xl font-semibold capitalize">{state.status}</p>
@@ -32,7 +32,7 @@ export default async function WarmupPage() {
             <WarmupControls status={state.status} />
           </div>
         ) : (
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-charcoal/80">
               Warm-up not started. While active, it caps total daily outreach volume and grows
               it gradually to protect your domain reputation.

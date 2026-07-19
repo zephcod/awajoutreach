@@ -1,7 +1,10 @@
-import { Client, Databases, ID, Query } from "node-appwrite";
+import { Client, Databases, ID, Query, Storage } from "node-appwrite";
 import { env } from "./env";
 
 export { ID, Query };
+
+export const ATTACHMENTS_BUCKET = () =>
+  process.env.APPWRITE_ATTACHMENTS_BUCKET_ID ?? "attachments";
 
 export const COLLECTIONS = {
   contacts: "contacts",
@@ -14,17 +17,30 @@ export const COLLECTIONS = {
   warmup: "warmup_state",
 } as const;
 
+let _client: Client | null = null;
 let _db: Databases | null = null;
+let _storage: Storage | null = null;
+
+function client(): Client {
+  if (!_client) {
+    _client = new Client()
+      .setEndpoint(env.appwriteEndpoint())
+      .setProject(env.appwriteProjectId())
+      .setKey(env.appwriteApiKey());
+  }
+  return _client;
+}
 
 /** Server-side Appwrite Databases client (singleton). */
 export function db(): Databases {
-  if (_db) return _db;
-  const client = new Client()
-    .setEndpoint(env.appwriteEndpoint())
-    .setProject(env.appwriteProjectId())
-    .setKey(env.appwriteApiKey());
-  _db = new Databases(client);
+  if (!_db) _db = new Databases(client());
   return _db;
+}
+
+/** Server-side Appwrite Storage client (singleton). */
+export function storage(): Storage {
+  if (!_storage) _storage = new Storage(client());
+  return _storage;
 }
 
 export const DB = () => env.databaseId();

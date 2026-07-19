@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Select } from "@/components/ui/select";
 
 interface TemplateOption {
   key: string;
@@ -69,22 +70,20 @@ export function SequenceBuilder({ templates }: { templates: TemplateOption[] }) 
         {steps.map((s, i) => (
           <div key={i} className="flex flex-wrap items-center gap-2">
             <span className="text-sm text-smoke/70">#{i + 1}</span>
-            <select
-              value={s.templateKey}
-              onChange={(e) => {
-                const t = templates.find((t) => t.key === e.target.value)!;
-                update(i, { templateKey: t.key, subject: t.defaultSubject });
-              }}
-              className={inputCls}
-            >
-              {templates.map((t) => (
-                <option key={t.key} value={t.key}>{t.key} ({t.category})</option>
-              ))}
-            </select>
+            <div className="w-full sm:w-56">
+              <Select
+                value={s.templateKey}
+                onValueChange={(v) => {
+                  const t = templates.find((t) => t.key === v)!;
+                  update(i, { templateKey: t.key, subject: t.defaultSubject });
+                }}
+                options={templates.map((t) => ({ value: t.key, label: `${t.key} (${t.category})` }))}
+              />
+            </div>
             <input
               value={s.subject}
               onChange={(e) => update(i, { subject: e.target.value })}
-              className={`${inputCls} flex-1 min-w-48`}
+              className={`${inputCls} w-full flex-1 sm:min-w-48`}
               placeholder="Subject ({{firstName}}, {{company}} supported)"
             />
             <label className="flex items-center gap-1 text-sm text-smoke">
